@@ -41,7 +41,7 @@ export function TransactionsTable({
   }
   return (
     <div className="w-full overflow-x-auto rounded-xl border bg-white">
-      <Table className="min-w-[1000px]table-fixed">
+      <Table className="table-fixed">
         <TableHeader className="sticky top-0 bg-slate-100">
           <TableRow>
             <TableHead className="p-3 text-center">

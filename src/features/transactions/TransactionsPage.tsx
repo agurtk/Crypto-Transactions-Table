@@ -12,6 +12,7 @@ import { EmptyState } from "./EmptyState";
 import { TransactionsTableSkeleton } from "./TransactionsTableSkeleton";
 
 import type { PageSize } from "../../features/transactions/types";
+import { TransactionsMobileList } from "./TransactionsMobileList";
 export function TransactionsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
@@ -101,12 +102,15 @@ export function TransactionsPage() {
                                     onPageSizeChange={handlePageSizeChange}
                                 />
                             </div>
-                            <TransactionsTable
-                                transactions={transactions}
-                                sortBy={sortBy}
-                                sortDir={sortDir}
-                                onSort={handleSort}
-                            />
+                            <div className="hidden md:block">
+                                <TransactionsTable
+                                    transactions={transactions}
+                                    sortBy={sortBy}
+                                    sortDir={sortDir}
+                                    onSort={handleSort}
+                                />
+                            </div>
+                            <TransactionsMobileList transactions={transactions} />
                             <PaginationControls
                                 page={page}
                                 totalPages={totalPages}
