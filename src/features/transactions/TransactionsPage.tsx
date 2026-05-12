@@ -1,21 +1,15 @@
-import type { Transaction } from "../../features/transactions/types";
-
-import {
-  fetchTransactions,
-  getExportUrl,
-} from "../../features/transactions/api";
-
 import { useEffect, useState } from "react";
 
-import { TransactionsTable } from "../../features/transactions/TransactionsTable";
-import { PaginationControls } from "../../features/transactions/PaginationControls";
-import { PageSizeSelect } from "./PageSizeSelect";
-import { TransactionsHeader } from "./TransactionsHeader";
+import { fetchTransactions, getExportUrl } from "./api";
 import { EmptyState } from "./EmptyState";
+import { PageSizeSelect } from "./PageSizeSelect";
+import { PaginationControls } from "./PaginationControls";
+import { TransactionsHeader } from "./TransactionsHeader";
+import { TransactionsMobileList } from "./TransactionsMobileList";
+import { TransactionsTable } from "./TransactionsTable";
 import { TransactionsTableSkeleton } from "./TransactionsTableSkeleton";
 
-import type { PageSize } from "../../features/transactions/types";
-import { TransactionsMobileList } from "./TransactionsMobileList";
+import type { ExportScope, PageSize, SortDir, Transaction } from "./types";
 export function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +18,7 @@ export function TransactionsPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   const [sortBy, setSortBy] = useState("date");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [pageSize, setPageSize] = useState<PageSize>(10);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +64,7 @@ export function TransactionsPage() {
     setPage(1);
   }
 
-  function handleExport(scope: "current" | "all") {
+  function handleExport(scope: ExportScope) {
     window.location.href = getExportUrl({
       scope,
       page,
