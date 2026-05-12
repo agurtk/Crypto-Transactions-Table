@@ -1,73 +1,61 @@
-# Bloxtax — Full-stack Technical Assignment
+# BloxTax Transactions Dashboard
 
-Build a single-page application that renders crypto transaction data stored in the provided SQLite database.
+A full-stack transactions dashboard built with Bun, React, TypeScript, SQLite, and Drizzle ORM.
 
----
+## Features
 
-## Overview
+- Server-side pagination
+- Server-side sorting
+- Excel export (current page or full dataset)
+- Responsive UI for desktop and mobile
+- Error and empty states
+- SQLite database with Drizzle ORM
 
-Your task is to build one page containing a data table over the `Transactions` dataset. The database is already populated and shipped with this repository — no external data source or seeding step is required.
+## Tech Stack
 
-You may use the included starter stack or any other stack of your choice, as long as the deliverable meets the requirements below and consumes the same dataset.
+### Backend
+- Bun
+- SQLite
+- Drizzle ORM
 
----
+### Frontend
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
 
-## Requirements
-
-### Required
-
-- **Data table** — display crypto transactions in a tabular view on a single page.
-- **Server-side pagination or infinite scroll** — data must be fetched in pages from the server; the full dataset must not be loaded into the client at once.
-- **Excel export** — provide an option to export the data (current view or full dataset) to a spreadsheet file. This must be implemented **without any third-party dependencies** — no `xlsx`, `exceljs`, `sheetjs`, or similar libraries. Write the file format directly.
-- **Responsive layout** — the page must be usable on both desktop and mobile viewports.
-
-### Nice to have
-
-- Column filtering.
-- Column sorting.
-
----
-
-## Provided starter
-
-The repository contains an optional starter stack:
-
-| Layer    | Technology                                      |
-| -------- | ----------------------------------------------- |
-| Runtime  | [Bun](https://bun.sh)                           |
-| Frontend | React 19, served via `Bun.serve()` HTML imports |
-| Styling  | Tailwind CSS v4, shadcn/ui primitives           |
-| Database | SQLite via `bun:sqlite` + Drizzle ORM           |
-| Bundler  | Built into Bun — no Vite or Webpack             |
-
-### Getting started
-
-**Prerequisites:** Bun ≥ 1.3 — install from [bun.sh](https://bun.sh).
+## Installation
 
 ```bash
-# Install dependencies
 bun install
-
-# Start the development server (with HMR)
-bun run dev
 ```
+## Start the Project
+bun run src/index.ts
+Then open:
+http://localhost:3000
 
-The app will be available at `http://localhost:3000`.
+### API Endpoints
+## Get Transactions
+GET /api/transactions
+Query Parameters:
+- page
+- pageSize
+- sortBy
+- sortDir
+## Example:
+/api/transactions?page=1&pageSize=10&sortBy=date&sortDir=desc
 
-`.env` is loaded automatically by Bun. The database file is committed to the repository at `src/api/database/database.db` and is ready to use — no migration or seeding is needed to get started.
+### Export Transactions
+GET /api/transactions/export
+Query Parameters:
+- scope=current|all
+- page
+- pageSize
+- sortBy
+- sortDir
+## Example:
+/api/transactions/export?scope=current&page=1&pageSize=10
 
----
+### Notes
 
-## Using your own stack
-
-You may use any framework, runtime. The following constraints apply regardless of the stack chosen:
-
-- The same `database.db` file (or an equivalent import of the same data) must be used.
-- All items in the **Required** section above must be met.
-- The zero-dependency rule for Excel export applies unconditionally.
-
----
-
-## Deliverable
-
-A runnable project with a `README` that explains how to install and start it.
+Excel export was implemented without third-party Excel libraries, according to the assignment requirements.
