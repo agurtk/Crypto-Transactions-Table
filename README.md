@@ -34,18 +34,18 @@ bun run src/index.ts
 Then open:
 http://localhost:3000
 
-### API Endpoints
-## Get Transactions
+## API Endpoints
+### Get Transactions
 GET /api/transactions
 Query Parameters:
 - page
 - pageSize
 - sortBy
 - sortDir
-## Example:
+### Example:
 /api/transactions?page=1&pageSize=10&sortBy=date&sortDir=desc
 
-### Export Transactions
+## Export Transactions
 GET /api/transactions/export
 Query Parameters:
 - scope=current|all
@@ -53,9 +53,9 @@ Query Parameters:
 - pageSize
 - sortBy
 - sortDir
-## Example:
+### Example:
 /api/transactions/export?scope=current&page=1&pageSize=10
 
-### Notes
+## Notes
 
 Excel export was implemented without third-party Excel libraries, according to the assignment requirements.
