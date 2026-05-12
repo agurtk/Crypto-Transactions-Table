@@ -30,9 +30,9 @@ export function TransactionsTable({
     }
 
     return sortDir === "asc" ? (
-      <ArrowUp className="h-4 w-4 text-slate-900" />
+      <ArrowUp className="h-4 w-4 text-[#613bbb]" />
     ) : (
-      <ArrowDown className="h-4 w-4 text-slate-900" />
+      <ArrowDown className="h-4 w-4 text-[#613bbb]" />
     );
   }
   return (
