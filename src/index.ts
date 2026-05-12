@@ -95,6 +95,63 @@ function createExcelHtml(rows: Record<string, unknown>[]) {
   `;
 }
 
+function getPaginationParams(url: URL) {
+  const page = toPositiveInteger(url.searchParams.get("page"), 1);
+  const pageSize = toPositiveInteger(
+    url.searchParams.get("pageSize"),
+    DEFAULT_PAGE_SIZE,
+  );
+
+  return {
+    page,
+    pageSize,
+    offset: (page - 1) * pageSize,
+  };
+}
+
+function getSortParams(url: URL) {
+  const sortBy = url.searchParams.get("sortBy") ?? "date";
+  const sortDir = url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
+
+  const sortColumn =
+    sortableColumns[sortBy as keyof typeof sortableColumns] ??
+    transactions.date;
+
+  return {
+    sortDir,
+    sortColumn,
+  };
+}
+
+function getExportScope(url: URL) {
+  return url.searchParams.get("scope") === "all" ? "all" : "current";
+}
+
+function getSearchParams(url: URL) {
+  return url.searchParams.get("search")?.trim() ?? "";
+}
+
+function getTransactionsWhere(search: string) {
+  if (!search) {
+    return undefined;
+  }
+
+  const searchValue = `%${search}%`;
+
+  return or(
+    like(transactions.method, searchValue),
+    like(transactions.network, searchValue),
+    like(transactions.txHash, searchValue),
+    like(transactions.buyCurrency, searchValue),
+    like(transactions.buyToken, searchValue),
+    like(transactions.sellCurrency, searchValue),
+    like(transactions.sellToken, searchValue),
+    like(transactions.senderAddress, searchValue),
+    like(transactions.receiverAddress, searchValue),
+    like(transactions.comments, searchValue),
+  );
+}
+
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
@@ -103,46 +160,19 @@ const server = serve({
     "/api/transactions": async (req) => {
       const url = new URL(req.url);
 
-      const page = toPositiveInteger(url.searchParams.get("page"), 1);
-      const pageSize = toPositiveInteger(
-        url.searchParams.get("pageSize"),
-        DEFAULT_PAGE_SIZE,
-      );
-      const sortBy = url.searchParams.get("sortBy") ?? "date";
-      const sortDir =
-        url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
+      const { page, pageSize, offset } = getPaginationParams(url);
+      const { sortDir, sortColumn } = getSortParams(url);
 
-      const search = url.searchParams.get("search")?.trim() ?? "";
+      const search = getSearchParams(url);
+      const whereClause = getTransactionsWhere(search);
 
-      const sortableColumns = {
-        id: transactions.id,
-        date: transactions.date,
-        method: transactions.method,
-        buyAmount: transactions.buyAmount,
-        sellAmount: transactions.sellAmount,
-        feeAmount: transactions.feeAmount,
-      };
-
-      const sortColumn =
-        sortableColumns[sortBy as keyof typeof sortableColumns] ??
-        transactions.date;
-
-      const offset = (page - 1) * pageSize;
-
-      const whereClause = search
-        ? or(
-            like(transactions.method, `%${search}%`),
-            like(transactions.network, `%${search}%`),
-            like(transactions.txHash, `%${search}%`),
-            like(transactions.buyCurrency, `%${search}%`),
-            like(transactions.buyToken, `%${search}%`),
-            like(transactions.sellCurrency, `%${search}%`),
-            like(transactions.sellToken, `%${search}%`),
-            like(transactions.senderAddress, `%${search}%`),
-            like(transactions.receiverAddress, `%${search}%`),
-            like(transactions.comments, `%${search}%`),
-          )
-        : undefined;
+      const data = await db
+        .select()
+        .from(transactions)
+        .where(whereClause)
+        .orderBy(sortDir === "asc" ? asc(sortColumn) : desc(sortColumn))
+        .limit(pageSize)
+        .offset(offset);
 
       const countResult = await db
         .select({ total: count() })
@@ -150,14 +180,6 @@ const server = serve({
         .where(whereClause);
 
       const total = countResult[0]?.total ?? 0;
-
-      const data = await await db
-        .select()
-        .from(transactions)
-        .where(whereClause)
-        .orderBy(sortDir === "asc" ? asc(sortColumn) : desc(sortColumn))
-        .limit(pageSize)
-        .offset(offset);
 
       return Response.json({
         data,
@@ -171,37 +193,22 @@ const server = serve({
     "/api/transactions/export": async (req) => {
       const url = new URL(req.url);
 
-      const scope = url.searchParams.get("scope") ?? "current";
+      const scope = getExportScope(url);
+      const { pageSize, offset } = getPaginationParams(url);
+      const { sortDir, sortColumn } = getSortParams(url);
+      const search = getSearchParams(url);
+      const whereClause = getTransactionsWhere(search);
 
-      const page = toPositiveInteger(url.searchParams.get("page"), 1);
-      const pageSize = toPositiveInteger(url.searchParams.get("pageSize"), 10);
+      const query = db
+        .select()
+        .from(transactions)
+        .where(whereClause)
+        .orderBy(sortDir === "asc" ? asc(sortColumn) : desc(sortColumn));
 
-      const offset = (page - 1) * pageSize;
-
-      const rows = await db.query.transactions.findMany({
-        limit: scope === "current" ? pageSize : undefined,
-        offset: scope === "current" ? offset : undefined,
-        orderBy: (transactions, { asc, desc }) => {
-          const sortBy = url.searchParams.get("sortBy") ?? "date";
-          const sortDir =
-            url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
-
-          const sortableColumns = {
-            id: transactions.id,
-            date: transactions.date,
-            method: transactions.method,
-            buyAmount: transactions.buyAmount,
-            sellAmount: transactions.sellAmount,
-            feeAmount: transactions.feeAmount,
-          };
-
-          const sortColumn =
-            sortableColumns[sortBy as keyof typeof sortableColumns] ??
-            transactions.date;
-
-          return [sortDir === "asc" ? asc(sortColumn) : desc(sortColumn)];
-        },
-      });
+      const rows =
+        scope === "current"
+          ? await query.limit(pageSize).offset(offset)
+          : await query;
 
       const html = createExcelHtml(rows);
 
@@ -211,11 +218,6 @@ const server = serve({
           "Content-Disposition": `attachment; filename="transactions-${scope}.xls"`,
         },
       });
-    },
-
-    "/api/data": async (req) => {
-      const trxs = await db.query.transactions.findMany();
-      return Response.json(trxs);
     },
   },
 
