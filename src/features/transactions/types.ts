@@ -12,6 +12,7 @@ export type FetchTransactionsParams = {
   pageSize: PageSize;
   sortBy: string;
   sortDir: SortDir;
+  // search: string;
 };
 
 export type TransactionsResponse = {

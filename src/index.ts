@@ -2,6 +2,7 @@ import { serve } from "bun";
 import index from "./index.html";
 import { db } from "./api/database";
 import { transactions } from "./api/database/schema";
+import { asc, count, desc, like, or } from "drizzle-orm";
 
 const DEFAULT_PAGE_SIZE = 25;
 
@@ -103,10 +104,24 @@ const server = serve({
       const url = new URL(req.url);
 
       const page = toPositiveInteger(url.searchParams.get("page"), 1);
-      const pageSize = toPositiveInteger(url.searchParams.get("pageSize"), DEFAULT_PAGE_SIZE);
-
+      const pageSize = toPositiveInteger(
+        url.searchParams.get("pageSize"),
+        DEFAULT_PAGE_SIZE,
+      );
       const sortBy = url.searchParams.get("sortBy") ?? "date";
-      const sortDir = url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
+      const sortDir =
+        url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
+
+      const search = url.searchParams.get("search")?.trim() ?? "";
+
+      const sortableColumns = {
+        id: transactions.id,
+        date: transactions.date,
+        method: transactions.method,
+        buyAmount: transactions.buyAmount,
+        sellAmount: transactions.sellAmount,
+        feeAmount: transactions.feeAmount,
+      };
 
       const sortColumn =
         sortableColumns[sortBy as keyof typeof sortableColumns] ??
@@ -114,28 +129,35 @@ const server = serve({
 
       const offset = (page - 1) * pageSize;
 
-      const total = await db.$count(transactions);
+      const whereClause = search
+        ? or(
+            like(transactions.method, `%${search}%`),
+            like(transactions.network, `%${search}%`),
+            like(transactions.txHash, `%${search}%`),
+            like(transactions.buyCurrency, `%${search}%`),
+            like(transactions.buyToken, `%${search}%`),
+            like(transactions.sellCurrency, `%${search}%`),
+            like(transactions.sellToken, `%${search}%`),
+            like(transactions.senderAddress, `%${search}%`),
+            like(transactions.receiverAddress, `%${search}%`),
+            like(transactions.comments, `%${search}%`),
+          )
+        : undefined;
 
-      const data = await db.query.transactions.findMany({
-        limit: pageSize,
-        offset,
-        orderBy: (transactions, { asc, desc }) => {
-          const sortableColumns = {
-            id: transactions.id,
-            date: transactions.date,
-            method: transactions.method,
-            buyAmount: transactions.buyAmount,
-            sellAmount: transactions.sellAmount,
-            feeAmount: transactions.feeAmount,
-          };
+      const countResult = await db
+        .select({ total: count() })
+        .from(transactions)
+        .where(whereClause);
 
-          const sortColumn =
-            sortableColumns[sortBy as keyof typeof sortableColumns] ??
-            transactions.date;
+      const total = countResult[0]?.total ?? 0;
 
-          return [sortDir === "asc" ? asc(sortColumn) : desc(sortColumn)];
-        },
-      });
+      const data = await await db
+        .select()
+        .from(transactions)
+        .where(whereClause)
+        .orderBy(sortDir === "asc" ? asc(sortColumn) : desc(sortColumn))
+        .limit(pageSize)
+        .offset(offset);
 
       return Response.json({
         data,
@@ -161,7 +183,8 @@ const server = serve({
         offset: scope === "current" ? offset : undefined,
         orderBy: (transactions, { asc, desc }) => {
           const sortBy = url.searchParams.get("sortBy") ?? "date";
-          const sortDir = url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
+          const sortDir =
+            url.searchParams.get("sortDir") === "asc" ? "asc" : "desc";
 
           const sortableColumns = {
             id: transactions.id,

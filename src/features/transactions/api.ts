@@ -1,27 +1,26 @@
 import type {
-    ExportScope,
-    SortDir,
-    TransactionsResponse,
-    FetchTransactionsParams,
+  ExportScope,
+  SortDir,
+  TransactionsResponse,
+  FetchTransactionsParams,
 } from "./types";
-
 
 export async function fetchTransactions({
   page,
   pageSize,
   sortBy,
   sortDir,
+  // search,
 }: FetchTransactionsParams): Promise<TransactionsResponse> {
   const params = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
     sortBy,
     sortDir,
+    // search,
   });
 
-  const response = await fetch(
-    `/api/transactions?${params.toString()}`
-  );
+  const response = await fetch(`/api/transactions?${params.toString()}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch transactions");
