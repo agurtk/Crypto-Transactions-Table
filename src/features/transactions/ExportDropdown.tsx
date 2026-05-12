@@ -15,13 +15,13 @@ type ExportDropdownProps = {
 export function ExportDropdown({ onExport }: ExportDropdownProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="outline" className="w-36 justify-between">
-          Export
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-
+      <DropdownMenuTrigger
+        render={
+          <Button variant="outline" className="w-36 justify-between">
+            Export <ChevronDown className="h-4 w-4" />
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuItem onClick={() => onExport("current")}>
           Export current page
