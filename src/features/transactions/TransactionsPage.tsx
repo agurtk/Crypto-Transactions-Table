@@ -13,6 +13,7 @@ import type { ExportScope, PageSize, SortDir, Transaction } from "./types";
 export function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -25,6 +26,11 @@ export function TransactionsPage() {
   useEffect(() => {
     async function loadTransactions() {
       setLoading(true);
+
+      const loadingTimeout = window.setTimeout(() => {
+        setShowLoading(true);
+      }, 200);
+
       setError(null);
       try {
         const result = await fetchTransactions({
@@ -41,7 +47,10 @@ export function TransactionsPage() {
 
         setError("Failed to load transactions.");
       } finally {
+        window.clearTimeout(loadingTimeout);
+
         setLoading(false);
+        setShowLoading(false);
       }
     }
 
@@ -83,7 +92,7 @@ export function TransactionsPage() {
             <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
               {error}
             </div>
-          ) : loading ? (
+          ) : showLoading ? (
             <TransactionsTableSkeleton />
           ) : transactions.length === 0 ? (
             <EmptyState
