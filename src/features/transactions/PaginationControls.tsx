@@ -19,6 +19,7 @@ export function PaginationControls({
       <Button
         variant={"outline"}
         onClick={onPrevious}
+        aria-label="Previous page"
         disabled={page === 1}
         className="w-28 justify-center gap-2 cursor-pointer"
         size={"lg"}
@@ -34,6 +35,7 @@ export function PaginationControls({
       <Button
         variant={"outline"}
         onClick={onNext}
+        aria-label="Next page"
         disabled={page === totalPages}
         className="w-28 justify-center gap-2 cursor-pointer"
         size={"lg"}
