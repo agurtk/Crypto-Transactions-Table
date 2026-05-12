@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { fetchTransactions, getExportUrl } from "./api";
 import { EmptyState } from "./EmptyState";
@@ -22,6 +22,7 @@ export function TransactionsPage() {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [pageSize, setPageSize] = useState<PageSize>(10);
   const [error, setError] = useState<string | null>(null);
+  const tableSectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     async function loadTransactions() {
@@ -83,11 +84,21 @@ export function TransactionsPage() {
     });
   }
 
+  function scrollToTable() {
+    tableSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
       <div className="mx-auto max-w-7xl">
         <TransactionsHeader onExport={handleExport} />
-        <section className="rounded-2xl border bg-white p-4 shadow-sm">
+        <section
+          ref={tableSectionRef}
+          className="rounded-2xl border bg-white p-4 shadow-sm"
+        >
           {error ? (
             <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
               {error}
@@ -119,8 +130,14 @@ export function TransactionsPage() {
               <PaginationControls
                 page={page}
                 totalPages={totalPages}
-                onPrevious={() => setPage((prev) => prev - 1)}
-                onNext={() => setPage((prev) => prev + 1)}
+                onPrevious={() => {
+                  setPage((prev) => prev - 1);
+                  scrollToTable();
+                }}
+                onNext={() => {
+                  setPage((prev) => prev + 1);
+                  scrollToTable();
+                }}
               />
             </>
           )}
