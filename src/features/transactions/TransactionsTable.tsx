@@ -9,11 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  formatAmount,
-  formatDate,
-  formatHash,
-} from "./utils";
+import { formatAmount, formatDate, formatHash } from "./utils";
 
 type TransactionsTableProps = {
   transactions: Transaction[];
@@ -93,38 +89,56 @@ export function TransactionsTable({
             const buyValue = formatAmount(
               tx.buyAmount,
               tx.buyCurrency,
-              tx.buyToken
+              tx.buyToken,
             );
 
             const sellValue = formatAmount(
               tx.sellAmount,
               tx.sellCurrency,
-              tx.sellToken
+              tx.sellToken,
             );
 
             const feeValue = formatAmount(
               tx.feeAmount,
               tx.feeCurrency,
-              tx.feeToken
-            ); return (
-              <TableRow key={tx.id} className="border-t transition-colors hover:bg-slate-200">
-                <TableCell className="p-3 text-center truncate">{tx.id}</TableCell>
+              tx.feeToken,
+            );
 
-                <TableCell className="p-3 text-center truncate">{tx.method}</TableCell>
+            return (
+              <TableRow
+                key={tx.id}
+                className="border-t transition-colors hover:bg-slate-200"
+              >
+                <TableCell className="p-3 text-center truncate">
+                  {tx.id}
+                </TableCell>
+
+                <TableCell className="p-3 text-center truncate">
+                  {tx.method}
+                </TableCell>
 
                 <TableCell className="p-3 text-center truncate">
                   {formatDate(tx.date)}
                 </TableCell>
 
-                <TableCell title={buyValue} className="p-3 text-center tabular-nums truncate">
+                <TableCell
+                  title={buyValue}
+                  className="p-3 text-center tabular-nums truncate"
+                >
                   {buyValue}
                 </TableCell>
 
-                <TableCell title={sellValue} className="p-3 text-center tabular-nums truncate">
+                <TableCell
+                  title={sellValue}
+                  className="p-3 text-center tabular-nums truncate"
+                >
                   {sellValue}
                 </TableCell>
 
-                <TableCell title={feeValue} className="p-3 text-center tabular-nums truncate">
+                <TableCell
+                  title={feeValue}
+                  className="p-3 text-center tabular-nums truncate"
+                >
                   {feeValue}
                 </TableCell>
 
@@ -132,11 +146,14 @@ export function TransactionsTable({
                   {tx.network ?? "-"}
                 </TableCell>
 
-                <TableCell className="p-3 font-mono text-xs text-center truncate">
+                <TableCell
+                  className="p-3 font-mono text-xs text-center truncate"
+                  title={tx.txHash ?? ""}
+                >
                   {formatHash(tx.txHash)}
                 </TableCell>
               </TableRow>
-            )
+            );
           })}
         </TableBody>
       </Table>

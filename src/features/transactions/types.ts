@@ -5,7 +5,7 @@ export type SortDir = "asc" | "desc";
 
 export type ExportScope = "current" | "all";
 
-export type PageSize = 10 | 25 | 50
+export type PageSize = 10 | 25 | 50;
 
 export type FetchTransactionsParams = {
   page: number;
