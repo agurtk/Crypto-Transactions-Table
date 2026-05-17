@@ -30,9 +30,9 @@ export function TransactionsTable({
     }
 
     return sortDir === "asc" ? (
-      <ArrowUp className="h-4 w-4 text-[#613bbb]" />
+      <ArrowUp className="h-4 w-4 text-slate-900" />
     ) : (
-      <ArrowDown className="h-4 w-4 text-[#613bbb]" />
+      <ArrowDown className="h-4 w-4 text-slate-900" />
     );
   }
   return (
@@ -40,7 +40,7 @@ export function TransactionsTable({
       <Table className="table-fixed">
         <TableHeader className="sticky top-0 bg-slate-100">
           <TableRow>
-            <TableHead className="p-3 text-center">
+            <TableHead scope="col" className="p-3 text-center">
               <Button
                 variant="ghost"
                 size="sm"
@@ -52,7 +52,7 @@ export function TransactionsTable({
               </Button>
             </TableHead>
 
-            <TableHead className="p-3 text-center">
+            <TableHead scope="col" className="p-3 text-center">
               <Button
                 variant="ghost"
                 size="sm"
@@ -64,7 +64,7 @@ export function TransactionsTable({
               </Button>
             </TableHead>
 
-            <TableHead className="p-3 text-center">
+            <TableHead scope="col" className="p-3 text-center">
               <Button
                 variant="ghost"
                 size="sm"
@@ -76,11 +76,21 @@ export function TransactionsTable({
               </Button>
             </TableHead>
 
-            <TableHead className="p-3 text-center">Buy</TableHead>
-            <TableHead className="p-3 text-center">Sell</TableHead>
-            <TableHead className="p-3 text-center">Fee</TableHead>
-            <TableHead className="p-3 text-center">Network</TableHead>
-            <TableHead className="p-3 text-center">Tx Hash</TableHead>
+            <TableHead scope="col" className="p-3 text-center">
+              Buy
+            </TableHead>
+            <TableHead scope="col" className="p-3 text-center">
+              Sell
+            </TableHead>
+            <TableHead scope="col" className="p-3 text-center">
+              Fee
+            </TableHead>
+            <TableHead scope="col" className="p-3 text-center">
+              Network
+            </TableHead>
+            <TableHead scope="col" className="p-3 text-center">
+              Tx Hash
+            </TableHead>
           </TableRow>
         </TableHeader>
 
@@ -103,7 +113,6 @@ export function TransactionsTable({
               tx.feeCurrency,
               tx.feeToken,
             );
-
             return (
               <TableRow
                 key={tx.id}
@@ -146,10 +155,7 @@ export function TransactionsTable({
                   {tx.network ?? "-"}
                 </TableCell>
 
-                <TableCell
-                  className="p-3 font-mono text-xs text-center truncate"
-                  title={tx.txHash ?? ""}
-                >
+                <TableCell className="p-3 font-mono text-xs text-center truncate">
                   {formatHash(tx.txHash)}
                 </TableCell>
               </TableRow>

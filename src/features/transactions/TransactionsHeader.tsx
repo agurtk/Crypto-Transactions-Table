@@ -15,7 +15,8 @@ export function TransactionsHeader({ onExport }: TransactionsHeaderProps) {
           </h1>
 
           <p className="mt-1 text-sm text-slate-500">
-            Browse, sort, paginate, and export transactions from the SQLite database.
+            Browse, sort, paginate, and export transactions from the SQLite
+            database.
           </p>
         </div>
 

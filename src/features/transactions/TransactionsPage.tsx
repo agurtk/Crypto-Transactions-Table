@@ -131,11 +131,11 @@ export function TransactionsPage() {
                 page={page}
                 totalPages={totalPages}
                 onPrevious={() => {
-                  setPage((prev) => prev - 1);
+                  setPage((prev) => Math.max(prev - 1, 1));
                   scrollToTable();
                 }}
                 onNext={() => {
-                  setPage((prev) => prev + 1);
+                  setPage((prev) => Math.min(prev + 1, totalPages));
                   scrollToTable();
                 }}
               />

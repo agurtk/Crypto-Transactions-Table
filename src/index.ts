@@ -4,7 +4,7 @@ import { db } from "./api/database";
 import { transactions } from "./api/database/schema";
 import { asc, count, desc, like, or } from "drizzle-orm";
 
-const DEFAULT_PAGE_SIZE = 25;
+const DEFAULT_PAGE_SIZE = 10;
 
 function toPositiveInteger(value: string | null, fallback: number) {
   const parsed = Number(value);
