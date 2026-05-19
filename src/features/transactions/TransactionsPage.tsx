@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import { fetchTransactions, getExportUrl } from "./api";
-import { EmptyState } from "./EmptyState";
 import { PageSizeSelect } from "./PageSizeSelect";
 import { PaginationControls } from "./PaginationControls";
 import { TransactionsHeader } from "./TransactionsHeader";
@@ -120,13 +119,8 @@ export function TransactionsPage() {
               onPageSizeChange={handlePageSizeChange}
             />
           </div>
-          {error ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-              {error}
-            </div>
-          ) : showLoading ? (
+          {showLoading ? (
             <TransactionsTableSkeleton />
-
           ) : (
             <>
               <div className="hidden md:block">
@@ -135,6 +129,7 @@ export function TransactionsPage() {
                   sortBy={sortBy}
                   sortDir={sortDir}
                   onSort={handleSort}
+                  errorMessage={error}
                 />
               </div>
               <TransactionsMobileList transactions={transactions} />

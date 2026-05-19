@@ -16,6 +16,7 @@ type TransactionsTableProps = {
   sortBy: string;
   sortDir: SortDir;
   onSort: (column: string) => void;
+  errorMessage?: string | null;
 };
 
 export function TransactionsTable({
@@ -23,6 +24,7 @@ export function TransactionsTable({
   sortBy,
   sortDir,
   onSort,
+  errorMessage,
 }: TransactionsTableProps) {
   function SortIcon({ column }: { column: string }) {
     if (sortBy !== column) {
@@ -94,7 +96,9 @@ export function TransactionsTable({
       </TableHeader>
 
       <TableBody>
-        {transactions.length === 0 ? (
+        {errorMessage ? (
+          <ErrorMessage message={errorMessage} />
+        ) : transactions.length === 0 ? (
           <EmptyTableRow colSpan={8} />
         ) : (
           transactions.map((tx) => {
@@ -184,8 +188,12 @@ function EmptyTableRow({ colSpan }: { colSpan: number }) {
 
 function ErrorMessage({ message }: { message: string }) {
   return (
-    <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-      {message}
-    </div>
+    <TableRow>
+      <TableCell colSpan={8} className="h-40 p-6">
+        <div className="flex h-full items-center justify-center rounded-xl border border-red-200 bg-red-50 px-4 text-red-600">
+          {message}
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }
