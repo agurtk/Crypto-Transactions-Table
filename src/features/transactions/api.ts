@@ -10,15 +10,15 @@ export async function fetchTransactions({
   pageSize,
   sortBy,
   sortDir,
-  // search,
+  search,
 }: FetchTransactionsParams): Promise<TransactionsResponse> {
   const params = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
     sortBy,
     sortDir,
-    // search,
   });
+  if (search) params.set("search", search);
 
   const response = await fetch(`/api/transactions?${params.toString()}`);
 

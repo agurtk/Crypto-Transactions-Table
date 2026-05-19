@@ -36,66 +36,68 @@ export function TransactionsTable({
     );
   }
   return (
-    <div className="w-full overflow-x-auto rounded-xl border bg-white">
-      <Table className="table-fixed">
-        <TableHeader className="sticky top-0 bg-slate-100">
-          <TableRow>
-            <TableHead scope="col" className="p-3 text-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSort("id")}
-                className="h-8 px-2 font-semibold cursor-pointer"
-              >
-                Id
-                <SortIcon column="id" />
-              </Button>
-            </TableHead>
+    <Table className="table-fixed">
+      <TableHeader className="sticky top-0 bg-slate-100">
+        <TableRow>
+          <TableHead scope="col" className="p-3 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSort("id")}
+              className="h-8 px-2 font-semibold cursor-pointer"
+            >
+              Id
+              <SortIcon column="id" />
+            </Button>
+          </TableHead>
 
-            <TableHead scope="col" className="p-3 text-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSort("method")}
-                className="h-8 px-2 font-semibold cursor-pointer"
-              >
-                Method
-                <SortIcon column="method" />
-              </Button>
-            </TableHead>
+          <TableHead scope="col" className="p-3 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSort("method")}
+              className="h-8 px-2 font-semibold cursor-pointer"
+            >
+              Method
+              <SortIcon column="method" />
+            </Button>
+          </TableHead>
 
-            <TableHead scope="col" className="p-3 text-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSort("date")}
-                className="h-8 px-2 font-semibold cursor-pointer"
-              >
-                Date
-                <SortIcon column="date" />
-              </Button>
-            </TableHead>
+          <TableHead scope="col" className="p-3 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSort("date")}
+              className="h-8 px-2 font-semibold cursor-pointer"
+            >
+              Date
+              <SortIcon column="date" />
+            </Button>
+          </TableHead>
 
-            <TableHead scope="col" className="p-3 text-center">
-              Buy
-            </TableHead>
-            <TableHead scope="col" className="p-3 text-center">
-              Sell
-            </TableHead>
-            <TableHead scope="col" className="p-3 text-center">
-              Fee
-            </TableHead>
-            <TableHead scope="col" className="p-3 text-center">
-              Network
-            </TableHead>
-            <TableHead scope="col" className="p-3 text-center">
-              Tx Hash
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+          <TableHead scope="col" className="p-3 text-center">
+            Buy
+          </TableHead>
+          <TableHead scope="col" className="p-3 text-center">
+            Sell
+          </TableHead>
+          <TableHead scope="col" className="p-3 text-center">
+            Fee
+          </TableHead>
+          <TableHead scope="col" className="p-3 text-center">
+            Network
+          </TableHead>
+          <TableHead scope="col" className="p-3 text-center">
+            Tx Hash
+          </TableHead>
+        </TableRow>
+      </TableHeader>
 
-        <TableBody>
-          {transactions.map((tx) => {
+      <TableBody>
+        {transactions.length === 0 ? (
+          <EmptyTableRow colSpan={8} />
+        ) : (
+          transactions.map((tx) => {
             const buyValue = formatAmount(
               tx.buyAmount,
               tx.buyCurrency,
@@ -160,9 +162,30 @@ export function TransactionsTable({
                 </TableCell>
               </TableRow>
             );
-          })}
-        </TableBody>
-      </Table>
+          })
+        )}
+      </TableBody>
+    </Table>
+  );
+}
+
+function EmptyTableRow({ colSpan }: { colSpan: number }) {
+  return (
+    <TableRow>
+      <TableCell
+        colSpan={colSpan}
+        className="h-40 text-center text-muted-foreground"
+      >
+        No transactions found.
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+      {message}
     </div>
   );
 }

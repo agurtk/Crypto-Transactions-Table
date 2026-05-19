@@ -17,7 +17,7 @@ export function PageSizeSelect({
 }: PageSizeSelectProps) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-slate-500">Rows per page</span>
+      <span className="text-sm text-slate-500">Rows:</span>
 
       <Select
         value={String(pageSize)}

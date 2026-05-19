@@ -10,6 +10,7 @@ import { TransactionsTable } from "./TransactionsTable";
 import { TransactionsTableSkeleton } from "./TransactionsTableSkeleton";
 
 import type { ExportScope, PageSize, SortDir, Transaction } from "./types";
+import { TransactionsSearch } from "./TransactionsSearch";
 export function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,8 @@ export function TransactionsPage() {
   const [pageSize, setPageSize] = useState<PageSize>(10);
   const [error, setError] = useState<string | null>(null);
   const tableSectionRef = useRef<HTMLElement | null>(null);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     async function loadTransactions() {
@@ -39,6 +42,7 @@ export function TransactionsPage() {
           pageSize,
           sortBy,
           sortDir,
+          search,
         });
 
         setTransactions(result.data);
@@ -56,7 +60,16 @@ export function TransactionsPage() {
     }
 
     loadTransactions();
-  }, [page, pageSize, sortBy, sortDir]);
+  }, [page, pageSize, sortBy, sortDir, search]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
 
   function handlePageSizeChange(nextPageSize: PageSize) {
     setPageSize(nextPageSize);
@@ -99,25 +112,23 @@ export function TransactionsPage() {
           ref={tableSectionRef}
           className="rounded-2xl border bg-white p-4 shadow-sm"
         >
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <TransactionsSearch value={searchInput} onChange={setSearchInput} />
+
+            <PageSizeSelect
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
           {error ? (
             <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
               {error}
             </div>
           ) : showLoading ? (
             <TransactionsTableSkeleton />
-          ) : transactions.length === 0 ? (
-            <EmptyState
-              title="No transactions found"
-              description="Try changing filters or page size."
-            />
+
           ) : (
             <>
-              <div className="mb-4">
-                <PageSizeSelect
-                  pageSize={pageSize}
-                  onPageSizeChange={handlePageSizeChange}
-                />
-              </div>
               <div className="hidden md:block">
                 <TransactionsTable
                   transactions={transactions}
