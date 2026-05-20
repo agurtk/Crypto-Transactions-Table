@@ -1,16 +1,16 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { TableCell, TableRow } from "@/components/ui/table";
 
 export function TransactionsTableSkeleton() {
-    return (
-        <div className="space-y-3">
-            <Skeleton className="h-10 w-full rounded-lg" />
-
-            {Array.from({ length: 10 }).map((_, index) => (
-                <Skeleton
-                    key={index}
-                    className="h-12 w-full rounded-lg"
-                />
-            ))}
-        </div>
-    );
+  return (
+    <>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <TableRow key={index}>
+          <TableCell colSpan={8} className="p-4">
+            <Skeleton className="h-6 flex w-full rounded-md" />
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
+  );
 }

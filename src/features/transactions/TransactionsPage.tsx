@@ -6,7 +6,6 @@ import { PaginationControls } from "./PaginationControls";
 import { TransactionsHeader } from "./TransactionsHeader";
 import { TransactionsMobileList } from "./TransactionsMobileList";
 import { TransactionsTable } from "./TransactionsTable";
-import { TransactionsTableSkeleton } from "./TransactionsTableSkeleton";
 
 import type { ExportScope, PageSize, SortDir, Transaction } from "./types";
 import { TransactionsSearch } from "./TransactionsSearch";
@@ -119,34 +118,29 @@ export function TransactionsPage() {
               onPageSizeChange={handlePageSizeChange}
             />
           </div>
-          {showLoading ? (
-            <TransactionsTableSkeleton />
-          ) : (
-            <>
-              <div className="hidden md:block">
-                <TransactionsTable
-                  transactions={transactions}
-                  sortBy={sortBy}
-                  sortDir={sortDir}
-                  onSort={handleSort}
-                  errorMessage={error}
-                />
-              </div>
-              <TransactionsMobileList transactions={transactions} />
-              <PaginationControls
-                page={page}
-                totalPages={totalPages}
-                onPrevious={() => {
-                  setPage((prev) => Math.max(prev - 1, 1));
-                  scrollToTable();
-                }}
-                onNext={() => {
-                  setPage((prev) => Math.min(prev + 1, totalPages));
-                  scrollToTable();
-                }}
-              />
-            </>
-          )}
+          <div className="hidden md:block">
+            <TransactionsTable
+              transactions={transactions}
+              sortBy={sortBy}
+              sortDir={sortDir}
+              onSort={handleSort}
+              errorMessage={error}
+              showLoading={showLoading}
+            />
+          </div>
+          <TransactionsMobileList transactions={transactions} />
+          <PaginationControls
+            page={page}
+            totalPages={totalPages}
+            onPrevious={() => {
+              setPage((prev) => Math.max(prev - 1, 1));
+              scrollToTable();
+            }}
+            onNext={() => {
+              setPage((prev) => Math.min(prev + 1, totalPages));
+              scrollToTable();
+            }}
+          />
         </section>
       </div>
     </main>

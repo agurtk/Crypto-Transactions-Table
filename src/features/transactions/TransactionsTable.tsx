@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatAmount, formatDate, formatHash } from "./utils";
+import { TransactionsTableSkeleton } from "./TransactionsTableSkeleton";
 
 type TransactionsTableProps = {
   transactions: Transaction[];
@@ -17,6 +18,7 @@ type TransactionsTableProps = {
   sortDir: SortDir;
   onSort: (column: string) => void;
   errorMessage?: string | null;
+  showLoading?: boolean;
 };
 
 export function TransactionsTable({
@@ -25,6 +27,7 @@ export function TransactionsTable({
   sortDir,
   onSort,
   errorMessage,
+  showLoading,
 }: TransactionsTableProps) {
   function SortIcon({ column }: { column: string }) {
     if (sortBy !== column) {
@@ -98,6 +101,8 @@ export function TransactionsTable({
       <TableBody>
         {errorMessage ? (
           <ErrorMessage message={errorMessage} />
+        ) : showLoading ? (
+          <TransactionsTableSkeleton />
         ) : transactions.length === 0 ? (
           <EmptyTableRow colSpan={8} />
         ) : (
