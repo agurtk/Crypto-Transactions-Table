@@ -78,3 +78,29 @@ export async function getTransactionsForExport({
 
   return query;
 }
+
+type ExportBatchInput = {
+  limit: number;
+  offset: number;
+  sortDir: "asc" | "desc";
+  sortColumn: SortColumn;
+  search: string;
+};
+
+export async function getTransactionsBatch({
+  limit,
+  offset,
+  sortDir,
+  sortColumn,
+  search,
+}: ExportBatchInput) {
+  const whereClause = getTransactionsWhere(search);
+
+  return db
+    .select()
+    .from(transactions)
+    .where(whereClause)
+    .orderBy(sortDir === "asc" ? asc(sortColumn) : desc(sortColumn))
+    .limit(limit)
+    .offset(offset);
+}

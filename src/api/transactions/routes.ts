@@ -4,8 +4,12 @@ import {
   getSearchParams,
   getSortParams,
 } from "./query-params";
-import { getTransactions, getTransactionsForExport } from "./service";
-import { createExcelHtml } from "./export";
+import {
+  getTransactions,
+  getTransactionsBatch,
+  getTransactionsForExport,
+} from "./service";
+import { createExcelBatchStream, createExcelStream } from "./export";
 import { excelResponse, internalServerError } from "../utils/http";
 
 export const transactionsRoutes = {
@@ -41,17 +45,29 @@ export const transactionsRoutes = {
       const { sortDir, sortColumn } = getSortParams(url);
       const search = getSearchParams(url);
 
-      const rows = await getTransactionsForExport({
-        scope,
-        pageSize,
-        offset,
-        sortDir,
-        sortColumn,
-        search,
-      });
-
-      const html = createExcelHtml(rows);
-      return excelResponse(html, scope);
+      const stream =
+        scope === "current"
+          ? createExcelStream(
+              await getTransactionsForExport({
+                scope,
+                pageSize,
+                offset,
+                sortDir,
+                sortColumn,
+                search,
+              }),
+            )
+          : createExcelBatchStream(async (batchOffset, limit) => {
+              const rows = await getTransactionsBatch({
+                limit,
+                offset: batchOffset,
+                sortDir,
+                sortColumn,
+                search,
+              });
+              return rows as Record<string, unknown>[];
+            });
+      return excelResponse(stream, scope);
     } catch (error) {
       return internalServerError(error);
     }
