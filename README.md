@@ -72,6 +72,7 @@ src/api/transactions
 ├── query-params.ts
 ├── export.ts
 ├── constants.ts
+```
 
 ## Responsibilities
 
