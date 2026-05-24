@@ -2,14 +2,14 @@ import { asc, count, desc } from "drizzle-orm";
 import { db } from "../database";
 import { transactions } from "../database/schema";
 import { getTransactionsWhere } from "./filters";
-import { sortableColumns } from "./constants";
+import type { SortColumn } from "@/features/transactions/types";
 
 type GetTransactionsInput = {
   page: number;
   pageSize: number;
   offset: number;
   sortDir: "asc" | "desc";
-  sortColumn: (typeof sortableColumns)[keyof typeof sortableColumns];
+  sortColumn: SortColumn;
   search: string;
 };
 
@@ -52,7 +52,7 @@ type GetTransactionsForExportInput = {
   pageSize: number;
   offset: number;
   sortDir: "asc" | "desc";
-  sortColumn: (typeof sortableColumns)[keyof typeof sortableColumns];
+  sortColumn: SortColumn;
   search: string;
 };
 

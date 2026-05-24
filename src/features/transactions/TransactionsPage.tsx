@@ -11,7 +11,6 @@ import type { ExportScope, PageSize, SortDir, Transaction } from "./types";
 import { TransactionsSearch } from "./TransactionsSearch";
 export function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -27,7 +26,6 @@ export function TransactionsPage() {
 
   useEffect(() => {
     async function loadTransactions() {
-      setLoading(true);
 
       const loadingTimeout = window.setTimeout(() => {
         setShowLoading(true);
@@ -52,7 +50,6 @@ export function TransactionsPage() {
       } finally {
         window.clearTimeout(loadingTimeout);
 
-        setLoading(false);
         setShowLoading(false);
       }
     }
