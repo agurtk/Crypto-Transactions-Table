@@ -14,3 +14,20 @@ export function TransactionsTableSkeleton() {
     </>
   );
 }
+
+export function MobileSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div key={index} className="rounded-2xl border bg-white p-4 shadow-sm">
+          <div className="mb-3 h-4 w-1/3 animate-pulse rounded bg-slate-200" />
+          <div className="space-y-2">
+            <div className="h-3 w-full animate-pulse rounded bg-slate-200" />
+            <div className="h-3 w-4/5 animate-pulse rounded bg-slate-200" />
+            <div className="h-3 w-2/3 animate-pulse rounded bg-slate-200" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

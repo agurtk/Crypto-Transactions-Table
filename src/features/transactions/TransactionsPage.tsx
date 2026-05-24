@@ -89,6 +89,7 @@ export function TransactionsPage() {
       pageSize,
       sortBy,
       sortDir,
+      search,
     });
   }
 
@@ -125,7 +126,13 @@ export function TransactionsPage() {
               showLoading={showLoading}
             />
           </div>
-          <TransactionsMobileList transactions={transactions} />
+          <div className="md:hidden">
+            <TransactionsMobileList
+              transactions={transactions}
+              errorMessage={error}
+              showLoading={showLoading}
+            />
+          </div>
           <PaginationControls
             page={page}
             totalPages={totalPages}

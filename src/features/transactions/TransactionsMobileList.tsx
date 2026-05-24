@@ -8,16 +8,31 @@ import {
 import { cn } from "@/lib/utils";
 import type { Transaction } from "./types";
 import { formatAmount, formatDate, formatHash } from "./utils";
+import { MobileSkeleton } from "./TransactionsTableSkeleton";
 
 type TransactionsMobileListProps = {
   transactions: Transaction[];
+  errorMessage?: string | null;
+  showLoading?: boolean;
 };
 
 export function TransactionsMobileList({
   transactions,
+  errorMessage,
+  showLoading,
 }: TransactionsMobileListProps) {
+  if (showLoading) {
+    return <MobileSkeleton />;
+  }
+  if (errorMessage) {
+    return <MobileError message={errorMessage} />;
+  }
+  if (transactions.length === 0) {
+    return <MobileEmptyState />;
+  }
+
   return (
-    <div className="space-y-3 md:hidden">
+    <div className="space-y-3">
       {transactions.map((tx) => (
         <TransactionCard key={tx.id} transaction={tx} />
       ))}
@@ -127,6 +142,24 @@ function MobileRow({ label, value, title, monospace }: MobileRowProps) {
       >
         {value}
       </div>
+    </div>
+  );
+}
+
+function MobileError({ message }: { message: string }) {
+  return (
+    <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-sm text-red-700">
+      <p className="font-medium">Something went wrong</p>
+      <p className="mt-1 text-red-600">{message}</p>
+    </div>
+  );
+}
+
+function MobileEmptyState() {
+  return (
+    <div className="rounded-2xl border border-dashed bg-slate-50 p-6 text-center text-sm text-slate-500">
+      <p className="font-medium text-slate-700">No transactions found</p>
+      <p className="mt-1">Try changing your search or filters.</p>
     </div>
   );
 }
