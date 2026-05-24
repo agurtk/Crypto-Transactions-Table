@@ -183,3 +183,9 @@ GET /api/transactions/export
 ---
 
 # Screenshots
+
+<img width="1298" height="814" alt="{0AC11371-FFEE-4B77-9D10-BE1996A4CEAA}" src="https://github.com/user-attachments/assets/6966fa61-c4f1-493b-9772-ba2709b1831f" />
+
+<img width="345" height="750" alt="{7F8E5074-2D0B-44B4-AEBB-1E44C89F07C2}" src="https://github.com/user-attachments/assets/584c2d0e-77cf-48a1-a501-aba7ae644246" />
+
+
