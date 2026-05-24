@@ -8,14 +8,26 @@ import {
 import { cn } from "@/lib/utils";
 import type { Transaction } from "./types";
 import { formatAmount, formatDate, formatHash } from "./utils";
+import { MobileSkeleton } from "./TransactionsTableSkeleton";
 
 type TransactionsMobileListProps = {
   transactions: Transaction[];
+  errorMessage?: string | null;
+  showLoading?: boolean;
 };
 
 export function TransactionsMobileList({
   transactions,
+  errorMessage,
+  showLoading,
 }: TransactionsMobileListProps) {
+  if (showLoading) {
+    return <MobileSkeleton />;
+  }
+  if (errorMessage) {
+    return <MobileError message={errorMessage} />;
+  }
+
   return (
     <div className="space-y-3 md:hidden">
       {transactions.map((tx) => (
@@ -127,6 +139,15 @@ function MobileRow({ label, value, title, monospace }: MobileRowProps) {
       >
         {value}
       </div>
+    </div>
+  );
+}
+
+function MobileError({ message }: { message: string }) {
+  return (
+    <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-sm text-red-700">
+      <p className="font-medium">Something went wrong</p>
+      <p className="mt-1 text-red-600">{message}</p>
     </div>
   );
 }

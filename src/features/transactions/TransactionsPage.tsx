@@ -125,7 +125,11 @@ export function TransactionsPage() {
               showLoading={showLoading}
             />
           </div>
-          <TransactionsMobileList transactions={transactions} />
+          <TransactionsMobileList
+            transactions={transactions}
+            errorMessage={error}
+            showLoading={showLoading}
+          />
           <PaginationControls
             page={page}
             totalPages={totalPages}
