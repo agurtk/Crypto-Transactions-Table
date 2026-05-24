@@ -35,6 +35,7 @@ type ExportUrlParams = {
   pageSize: number;
   sortBy: string;
   sortDir: SortDir;
+  search?: string;
 };
 
 export function getExportUrl({
@@ -43,6 +44,7 @@ export function getExportUrl({
   pageSize,
   sortBy,
   sortDir,
+  search
 }: ExportUrlParams) {
   const params = new URLSearchParams({
     scope,
@@ -51,6 +53,7 @@ export function getExportUrl({
     sortBy,
     sortDir,
   });
+  if (search) params.set("search", search);
 
   return `/api/transactions/export?${params.toString()}`;
 }
